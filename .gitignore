@@ -1,1 +1,11 @@
-node_modules
+# Dependency directories
+node_modules/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Optional: Also ignore environment files
+.env
+.env.local
