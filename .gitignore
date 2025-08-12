@@ -9,3 +9,9 @@ pnpm-lock.yaml
 # Optional: Also ignore environment files
 .env
 .env.local
+
+# Android build files
+android/app/build/
+android/.gradle/
+*.apk
+*.aab
