@@ -38,9 +38,10 @@ export default function LoginScreen() {
     
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Login</Text>
+      <Text style={styles.heading}>Login </Text>
 
       <Formik
+
         initialValues={{ email: '', password: '' }}
         validationSchema={LoginSchema}
         onSubmit={(values) => {
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
   buttonText: {
     textAlign: 'center',
     color: '#fff',
-    fontWeight: 'bold',
     fontSize: 16,
+    fontFamily:"Montserrat-Black"
   },
 });
