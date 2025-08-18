@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../utils/api';
 import { endpoints } from '../../config/config';
-import { store } from '../store';
 
 export interface authDataType {
   message: string | null;
@@ -15,17 +14,39 @@ const initialState: authDataType = {
   token: null,
 };
 
-export const loginAction = createAsyncThunk(
-  'loginAction',
+export const homeAction = createAsyncThunk(
+  'homeAction',
   async (
     { username, password }: { username: string; password: string },
-    { getState, rejectWithValue, fulfillWithValue },
+    { getState,fulfillWithValue,rejectWithValue},
   ) => {
     const data = {
       username,
       password,
     };
-    const homeToken = store.getState().HomeReducer.token
+    const response = await api.post(endpoints.LOGIN, data, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (response) {
+      if (response.data) {
+        return fulfillWithValue(response.data);
+      } else {
+        return rejectWithValue('Something went wrong!');
+      }
+    }
+  },
+);
+
+export const getUserDetails = createAsyncThunk(
+  'homeAction',
+  async (
+    _,
+    { getState,fulfillWithValue,rejectWithValue},
+  ) => {
+    const data = {
+    };
     const response = await api.post(endpoints.LOGIN, data, {
       headers: {
         'Content-Type': 'application/json',
@@ -50,31 +71,31 @@ export const loginAction = createAsyncThunk(
 
 // getUserDetails({name:"praful",password:"sksk"})
 
-export const AuthSlice = createSlice({
-  name: 'authlice',
+export const homeSlice = createSlice({
+  name: 'homeSlice',
   initialState,
   reducers: {
     actionLogout: state => {
       state.token = null;
     },
   },
-  extraReducers: builder => {
-    builder.addCase(loginAction.pending, (state, action) => {
+  extraReducers: (builder) => {
+    builder.addCase(homeAction.pending, (state, action) => {
       state.loading = true;
       state.message = null;
     });
-    builder.addCase(loginAction.fulfilled, (state, action) => {
+    builder.addCase(homeAction.fulfilled, (state, action) => {
       state.loading = false;
       state.token = action.payload.token;
       state.message = null;
     });
-    builder.addCase(loginAction.rejected, (state, action) => {
+    builder.addCase(homeAction.rejected, (state, action) => {
       state.loading = false;
       state.message = 'Please try again!';
     });
   },
 });
 
-export const { actionLogout } = AuthSlice.actions;
+export const { actionLogout } = homeSlice.actions;
 
-export default AuthSlice.reducer;
+export default homeSlice.reducer;

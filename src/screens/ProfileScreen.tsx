@@ -2,14 +2,22 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { actionLogout } from '../redux/reducers/auth';
 
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen({ navigation }:any) {
+
   const navigation2 = useNavigation()
 
+  const token=useSelector((values:RootState) => console.log(values.HomeReducer.token))
+  const dispatch = useDispatch()
+
+  
   // React.useEffect(() => {
   //   const unsubscribe = navigation2?.addListener('focus', () => {
-  //     alert('Screen is focused');
+  //     alert('Screen is focused')
   //   });
 
   //   const onBlurChange = navigation2?.addListener('blur', () => {
@@ -20,6 +28,7 @@ export default function ProfileScreen({ navigation }) {
   // }, [navigation]);
 
   const handleNavigate = () => {
+    dispatch(actionLogout())
     navigation?.navigate("HomeScreen");
   };
 
