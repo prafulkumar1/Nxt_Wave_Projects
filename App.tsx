@@ -9,12 +9,15 @@ import SplashScreen from './src/screens/SplashScreen';
 import AuthNavigation from './src/navigation/AuthNavigation';
 import { UserContextProvider } from './src/context/ContextApi';
 import TodoList from './src/screens/TodoList';
+import TodoScreen from './src/screens/TodoWithSwipeDelete';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
 const MainNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='TodoList'>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='TodoScreen'>
+      <Stack.Screen name="TodoScreen" component={TodoScreen} />
       <Stack.Screen name="TodoList" component={TodoList} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="Main_Home" component={StackNavigator} />
@@ -38,9 +41,11 @@ export default function App() {
   return (
     <Provider store={store}>
       <UserContextProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <NavigationContainer>
           <MainNavigation />
         </NavigationContainer>
+        </GestureHandlerRootView>
       </UserContextProvider>
     </Provider>
   );
