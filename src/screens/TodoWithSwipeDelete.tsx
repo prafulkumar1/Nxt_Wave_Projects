@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
+import CustomButton from "../components/CustomButton";
+import {RootState} from '../redux/store'
 
 export default function TodoScreen() {
   const [todos, setTodos] = useState([
@@ -29,7 +31,7 @@ export default function TodoScreen() {
   };
 
   // Delete Todo
-  const deleteTodo = (id) => {
+  const deleteTodo = (id:string) => {
     setTodos(todos.filter((item) => item.id !== id));
   };
 
@@ -47,7 +49,7 @@ export default function TodoScreen() {
   }, []);
 
   // Render Item with Swipe Delete
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }:any) => {
     const renderRightActions = () => (
       <TouchableOpacity
         style={styles.deleteBtn}
@@ -86,6 +88,12 @@ export default function TodoScreen() {
           <Text style={styles.addBtnText}>Add</Text>
         </TouchableOpacity>
       </View>
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}} >
+        <CustomButton buttonLabel={"Save"} style={{backgroundColor:"red"}} onPress={() => console.log("Save")}/>
+        <CustomButton  buttonLabel={"Cancel"}  style={{backgroundColor:"blue"}} onPress={() => console.log("Cancel")}/>
+        <CustomButton buttonLabel={"Edit"} style={{backgroundColor:"green"}} onPress={() => console.log("Edit")}/>
+      </View>
+     
 
       {/* FlatList */}
       <FlatList
@@ -104,9 +112,13 @@ export default function TodoScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
+     
     </View>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: "#F5F6FA",marginTop:40 },

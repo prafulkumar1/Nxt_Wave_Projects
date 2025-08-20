@@ -75,8 +75,9 @@ export const homeSlice = createSlice({
   name: 'homeSlice',
   initialState,
   reducers: {
-    actionLogout: state => {
-      state.token = null;
+    actionLogout: (state,payload) => {
+      console.log(payload.payload,"--->>tokennnn ")
+      state.token = payload.payload;
     },
   },
   extraReducers: (builder) => {
