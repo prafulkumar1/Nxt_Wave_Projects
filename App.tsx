@@ -12,13 +12,15 @@ import TodoList from './src/screens/TodoList';
 import TodoScreen from './src/screens/TodoWithSwipeDelete';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ClassItems from './src/screens/ClassItems';
+import SignInScreen from './src/screens/SignInScreen';
 // import ClassItems from './src/screens/ClassItems';
 
 const Stack = createNativeStackNavigator();
 
 const MainNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='ClassItems'>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='SignInScreen'>
+      <Stack.Screen name="SignInScreen" component={SignInScreen} />
       <Stack.Screen name="ClassItems" component={ClassItems} />
       <Stack.Screen name="TodoScreen" component={TodoScreen} />
       <Stack.Screen name="TodoList" component={TodoList} />
