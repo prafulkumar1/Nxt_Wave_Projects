@@ -9,10 +9,13 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
+  PermissionsAndroid,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import CustomButton from "../components/CustomButton";
-import {RootState} from '../redux/store'
+import { RootState } from "../redux/store";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 export default function TodoScreen() {
   const [todos, setTodos] = useState([
@@ -31,7 +34,7 @@ export default function TodoScreen() {
   };
 
   // Delete Todo
-  const deleteTodo = (id:string) => {
+  const deleteTodo = (id: string) => {
     setTodos(todos.filter((item) => item.id !== id));
   };
 
@@ -49,7 +52,7 @@ export default function TodoScreen() {
   }, []);
 
   // Render Item with Swipe Delete
-  const renderItem = ({ item }:any) => {
+  const renderItem = ({ item }: any) => {
     const renderRightActions = () => (
       <TouchableOpacity
         style={styles.deleteBtn}
@@ -73,6 +76,16 @@ export default function TodoScreen() {
     );
   };
 
+
+  const requestPermissions = async () => {
+    const grant = await PermissionsAndroid.requestMultiple(
+      [
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+      ]
+    )
+  }
+
   return (
     <View style={styles.container}>
       {/* Header Input */}
@@ -88,12 +101,31 @@ export default function TodoScreen() {
           <Text style={styles.addBtnText}>Add</Text>
         </TouchableOpacity>
       </View>
-      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}} >
-        <CustomButton buttonLabel={"Save"} style={{backgroundColor:"red"}} onPress={() => console.log("Save")}/>
-        <CustomButton  buttonLabel={"Cancel"}  style={{backgroundColor:"blue"}} onPress={() => console.log("Cancel")}/>
-        <CustomButton buttonLabel={"Edit"} style={{backgroundColor:"green"}} onPress={() => console.log("Edit")}/>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <CustomButton
+          buttonLabel={"Save"}
+          style={{ backgroundColor: "red" }}
+          onPress={() => console.log("Save")}
+        />
+        <CustomButton
+          buttonLabel={"Cancel"}
+          style={{ backgroundColor: "blue" }}
+          onPress={() => console.log("Cancel")}
+        />
+        <CustomButton
+          buttonLabel={"Edit"}
+          style={{ backgroundColor: "green" }}
+          onPress={() => console.log("Edit")}
+        />
       </View>
-     
+      <EvilIcons name="search" size={30} color="#900" />
+      {/* <AntDesign name="search" size={30} color="#900" /> */}
 
       {/* FlatList */}
       <FlatList
@@ -106,23 +138,29 @@ export default function TodoScreen() {
         )}
         ListFooterComponent={() => (
           <Text style={styles.listFooter}>--- End of List ---</Text>
-        // <ActivityIndicator size={'small'} color={'red'}/>
+          // <ActivityIndicator size={'small'} color={'red'}/>
         )}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       />
-     
     </View>
   );
 }
 
-
-
-
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#F5F6FA",marginTop:40 },
-  title: { fontSize: 26, fontWeight: "bold", marginBottom: 10, color: "#2C3A47" },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#F5F6FA",
+    marginTop: 40,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#2C3A47",
+  },
   inputContainer: {
     flexDirection: "row",
     marginBottom: 15,
@@ -146,7 +184,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   todoText: { fontSize: 16, color: "#333" },
-  separator: { height: 6, backgroundColor:"#000" },
+  separator: { height: 6, backgroundColor: "#000" },
   listHeader: {
     fontSize: 18,
     fontWeight: "600",

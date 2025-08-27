@@ -12,6 +12,10 @@ import { socialData } from "../constants/CustomData";
 import { GoogleSignin,isErrorWithCode,isSuccessResponse,statusCodes } from "@react-native-google-signin/google-signin";
 import { authorize } from 'react-native-app-auth';
 import { jwtDecode } from "jwt-decode";
+import { AccessToken, LoginManager, Profile } from 'react-native-fbsdk-next'
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from 'react-native-vector-icons/EvilIcons';
 
 const config = {
   issuer: 'https://accounts.google.com',
@@ -29,6 +33,7 @@ export default function SignInScreen(props:any) {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
+    getAccessToken()
     // GoogleSignin.configure({
     //   webClientId: '1019287630296-q1pfnt5ho137mm8g2ere9vreb4pl7h2f.apps.googleusercontent.com',
     // });
@@ -37,6 +42,15 @@ export default function SignInScreen(props:any) {
     //   offlineAccess: true, // so you get refresh token
     // });
   },[])
+
+    const getAccessToken = async () =>{
+    let token  = await AsyncStorage.getItem("accessToken")
+    if(!token){
+      props?.navigation?.navigate("TodoScreen")
+    }else{
+      props?.navigation?.navigate("Login")
+    }
+  }
 
   // const signIn = async () => {
   //   try {
@@ -77,7 +91,6 @@ export default function SignInScreen(props:any) {
         const userInfo = jwtDecode(idToken);
         props?.navigation?.navigate("TodoScreen")
         console.log("User Info from ID Token:", userInfo);
-        // Example userInfo fields: email, name, picture, sub
       }
 
     } catch (error) {
@@ -89,8 +102,29 @@ export default function SignInScreen(props:any) {
   const handleSocialLogin = (provider: string) => {
     if(provider == "Google"){
       signIn()
+    }else if(provider === "Facebook"){
+      onFacebookButtonPress()
     }
   };
+
+  async function onFacebookButtonPress() {
+    // Attempt login with permissions
+    const result = await LoginManager?.logInWithPermissions(['public_profile', 'email']);
+  
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+  
+    const data = await AccessToken.getCurrentAccessToken();
+    console.log(data,"---->>>data")
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+  
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+  
+    return auth().signInWithCredential(facebookCredential);
+  }
 
   const renderSocialItem = ({ item }: any) => (
     <TouchableOpacity
@@ -110,6 +144,7 @@ export default function SignInScreen(props:any) {
       </View>
 
       <Text style={styles.title}>Sign in your account</Text>
+      <Icon name="search" size={30} color="#900" />
 
       <Text style={styles.label}>Email</Text>
       <TextInput
