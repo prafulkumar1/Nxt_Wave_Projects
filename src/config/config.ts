@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const baseURL = 'http://13.201.134.161';
+export const baseURL = 'https://reqres.in/api/users';
 export const endpoints = {
   LOGIN: 'auth/login',
 };
