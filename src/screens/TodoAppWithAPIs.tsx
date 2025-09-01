@@ -12,6 +12,7 @@ import {
   Platform,
   PermissionsAndroid,
   Modal,
+  Button,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { baseURL } from "../config/config";
@@ -21,6 +22,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { styles } from "../styles/TodoAppWithAPIsStyles";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import LinearGradient from "react-native-linear-gradient";
+import PushNotification, { Importance } from "react-native-push-notification";
 
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
@@ -41,25 +43,6 @@ export default function TodoAppWithAPIs() {
     "x-api-key": "reqres-free-v1",
     "Content-Type": "application/json",
   };
-
-  const jsonData = [
-    {
-      "id": 1,
-      "title": "Nature Video",
-      "url": "https://www.w3schools.com/html/mov_bbb.mp4"
-    },
-    {
-      "id": 2,
-      "title": "City Life",
-      "url": "https://www.w3schools.com/html/movie.mp4"
-    },
-    {
-      "id": 3,
-      "title": "Ocean Waves",
-      "url": "https://sample-videos.com/video123/mp4/480/asdasdas.mp4"
-    }
-  ]
-  
 
   const fetchTodos = async () => {
     setLoading(true);
@@ -83,9 +66,41 @@ export default function TodoAppWithAPIs() {
     }
   };
 
+  const createChannel = () => {
+    PushNotification.createChannel(
+      {
+        channelId: "praful_channel",
+        channelName: "Praful Channel",
+        channelDescription: "A channel to categorise your notifications",
+        playSound: false,
+        soundName: "default", // (optional) See `soundName` parameter of `localNotification` function
+        importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+        vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+      },
+      (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
+    );
+  }
+
   useEffect(() => {
+    createChannel()
     fetchTodos();
   }, []);
+
+  const getPushNotification = () => {
+    // PushNotification.localNotificationSchedule({
+    //   channelId: "praful_channel",  // 👈 MUST match the channel you created
+    //   message: "My Notification Message",
+    //   date: new Date(Date.now()), // show in 10s
+    //   allowWhileIdle: true,
+    //   // importance: Importance.HIGH,
+    // });
+    PushNotification.localNotification({
+      channelId: "praful_channel",  // must match created channel
+      title: "My Notification Title",
+      message: "My Notification Message", // required
+      allowWhileIdle: true,
+    });
+  };
 
   const addTodo = async () => {
     if (input.trim().length === 0) return;
@@ -406,6 +421,10 @@ export default function TodoAppWithAPIs() {
               </TouchableOpacity>
             </View>
           </View>
+
+          <TouchableOpacity onPress={() =>getPushNotification()}>
+            <Text>push notification</Text>
+          </TouchableOpacity>
 
           <FlatList
             data={todos}

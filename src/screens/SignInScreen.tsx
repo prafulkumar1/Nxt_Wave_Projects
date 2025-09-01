@@ -33,10 +33,13 @@ export default function SignInScreen(props:any) {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    getAccessToken()
-    // GoogleSignin.configure({
-    //   webClientId: '1019287630296-q1pfnt5ho137mm8g2ere9vreb4pl7h2f.apps.googleusercontent.com',
-    // });
+    // getAccessToken()
+    GoogleSignin.configure({
+      webClientId: '1019287630296-q1pfnt5ho137mm8g2ere9vreb4pl7h2f.apps.googleusercontent.com',
+      scopes:[
+        'https://www.googleapis.com/auth/calendar'
+      ]
+    });
     // GoogleSignin.configure({
     //   webClientId: '1019287630296-q1pfnt5ho137mm8g2ere9vreb4pl7h2f.apps.googleusercontent.com',
     //   offlineAccess: true, // so you get refresh token
@@ -52,51 +55,51 @@ export default function SignInScreen(props:any) {
     }
   }
 
-  // const signIn = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-  //     const userInfo = await GoogleSignin.signIn();
-  //     console.log("User Info:", userInfo);
-  //   } catch (error: any) {
-  //     console.log(JSON.stringify(error),"-----error")
-  //     if (isErrorWithCode(error)) {
-  //       console.log("Google Sign-In Error:", error.code, error.message);
-  //       switch (error.code) {
-  //         case statusCodes.SIGN_IN_CANCELLED:
-  //           console.log("User cancelled sign-in");
-  //           break;
-  //         case statusCodes.IN_PROGRESS:
-  //           console.log("Sign-in already in progress");
-  //           break;
-  //         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-  //           console.log("Play services not available or outdated");
-  //           break;
-  //         default:
-  //           console.log("Other error:", error);
-  //       }
-  //     } else {
-  //       console.log("Non-Google error:", error);
-  //     }
-  //   }
-  // };
-
-    const signIn = async () => {
+  const signIn = async () => {
     try {
-      const authState = await authorize(config);
-      console.log('Auth State:', authState);
-
-      const { accessToken, refreshToken,idToken } = authState;
-      console.log(accessToken)
-      if (idToken) {
-        const userInfo = jwtDecode(idToken);
-        props?.navigation?.navigate("TodoScreen")
-        console.log("User Info from ID Token:", userInfo);
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const userInfo = await GoogleSignin.signIn();
+      console.log("User Info:", userInfo);
+    } catch (error: any) {
+      console.log(JSON.stringify(error),"-----error")
+      if (isErrorWithCode(error)) {
+        console.log("Google Sign-In Error:", error.code, error.message);
+        switch (error.code) {
+          case statusCodes.SIGN_IN_CANCELLED:
+            console.log("User cancelled sign-in");
+            break;
+          case statusCodes.IN_PROGRESS:
+            console.log("Sign-in already in progress");
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            console.log("Play services not available or outdated");
+            break;
+          default:
+            console.log("Other error:", error);
+        }
+      } else {
+        console.log("Non-Google error:", error);
       }
-
-    } catch (error) {
-      console.error('Login error:', error);
     }
   };
+
+  //   const signIn = async () => {
+  //   try {
+  //     const authState = await authorize(config);
+  //     console.log('Auth State:', authState);
+
+  //     const { accessToken, refreshToken,idToken } = authState;
+  //     console.log(accessToken)
+  //     if (idToken) {
+  //       const userInfo = jwtDecode(idToken);
+  //       props?.navigation?.navigate("TodoScreen")
+  //       console.log("User Info from ID Token:", userInfo);
+  //     }
+
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //   }
+  // };
 
   
   const handleSocialLogin = (provider: string) => {

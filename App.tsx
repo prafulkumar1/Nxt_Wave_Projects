@@ -15,13 +15,36 @@ import ClassItems from './src/screens/ClassItems';
 import SignInScreen from './src/screens/SignInScreen';
 import TodoAppWithAPIs from './src/screens/TodoAppWithAPIs';
 import TermsAndCondition from './src/screens/TermsAndCondition';
-// import ClassItems from './src/screens/ClassItems';
+import MediaItems from './src/screens/MediaItems';
+import PushNotification from "react-native-push-notification";
+import SnapCarousel from './src/screens/SnapCarousal';
+
+PushNotification.configure({
+  onRegister: function (token) {
+    console.log("TOKEN:", token);
+  },
+  onNotification: function (notification) {
+    console.log("NOTIFICATION:", notification);
+  },
+  onAction: function (notification) {
+    console.log("ACTION:", notification.action);
+    console.log("NOTIFICATION:", notification);
+  },
+
+  onRegistrationError: function(err) {
+    console.error(err.message, err);
+  },
+  popInitialNotification: true,
+  requestPermissions: true,
+});
 
 const Stack = createNativeStackNavigator();
 
 const MainNavigation = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='TodoAppWithAPIs'>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='SignInScreen'>
+      <Stack.Screen name="SnapCarousel" component={SnapCarousel} />
+      <Stack.Screen name="MediaItems" component={MediaItems} />
       <Stack.Screen name="TermsAndCondition" component={TermsAndCondition} />
       <Stack.Screen name="TodoAppWithAPIs" component={TodoAppWithAPIs} />
       <Stack.Screen name="SignInScreen" component={SignInScreen} />
